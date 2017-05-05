@@ -1,12 +1,10 @@
-library(shiny)
 ## devtools::install_github('rstudio/DT')
 library(DT)
-library(dplyr)
-library(plotly)
-library(ggplot2)
-library(stringr)
-library(tidyr)
-library(xlsx)
+pkgs <-c('shiny','DT','dplyr','plotly','ggplot2','stringr','tidyr','xlsx')
+for(p in pkgs) if(p %in% rownames(installed.packages()) == FALSE) {install.packages(p)}
+for(p in pkgs) suppressPackageStartupMessages(library(p, quietly=TRUE, character.only=TRUE))
+rm('p','pkgs')
+
 source("helper.R")
 
 shinyServer(function(input, output, session) {
@@ -45,21 +43,33 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$file1, {
-    if(is.null(input$file1))
+    if(is.null(input$file1)) {
+      print("FILE IS NULL")
       return(NULL)
-    
+    }
+
     ext <- tools::file_ext(input$file1$name)
-    
-    if(paste(ext) != ".xlsx")
+
+    if(paste(ext) != ".lsx"){
+      print("THAT IS NOT AN XLSX")
+      print(ext)
       return(NULL)
+    }
     
     file.rename(input$file1$datapath,
                 paste(input$file1$datapath, ".xlsx", sep=""))
+    
     posters <- read.xlsx(paste(input$file1$datapath, ".xlsx", sep=""),sheetName = "Program")
     names(posters) <- c("ID","author","title")
-    posters.df <<- separate(posters, col = "ID", into = c("Category","ID"),
+    
+    posters.df <- separate(posters, col = "ID", 
+                            into = c("Category","ID"),
                             sep = "(?<=[A-Z]) ?(?=[0-9])") %>%
-      mutate(Category = factor(Category), ID = factor(ID))
+    mutate(Category = factor(Category), ID = factor(ID))
+    
+    # print(posters.df)
+    
+    savePosterInfo(posters.df)
   })
   
   observeEvent(input$submitpepc, {
@@ -68,7 +78,7 @@ shinyServer(function(input, output, session) {
     vote3 <- posterInfo(input$pep3)
     df <- data.frame(vote1,vote2,vote3, fix.empty.names = FALSE) %>% t() %>% data.frame()
     names(df) <- c("Category","ID")
-    print(df)
+    # print(df)
     savePeoplesChoice(subset(df,!is.na(df$Category) & !is.na(df$ID)))
     updateTextInput(session,"pep1",value = "")
     updateTextInput(session,"pep2",value = "")
@@ -156,17 +166,27 @@ shinyServer(function(input, output, session) {
     autoInvalidate()
     winners <- getWinners("PEOPLESCHOICE")
     tagList(
-      h2(paste("1st place, with a total of", winners[1,]$score,"votes")),
-      h2(paste("goes to: ", winners[1,]$author)),
-      h2(paste("For their poster titled: ", winners[1,]$title)),
+      fluidRow(
+        column(12,
+          column(4,
+                 h4(paste("Graduate/Faculty Peoples Choice 1st place, with a total of", winners[1,]$score,"votes")),
+                 h4(paste("goes to: ", winners[1,]$author)),
+                 h4(paste("For their poster titled: ", winners[1,]$title))
+          ),
+          column(4,
+                 h4(paste("Undergraduate/Faculty Peoples Choice 1st place, with a total of", winners[2,]$score,"votes")),
+                 h4(paste("goes to: ", winners[2,]$author)),
+                 h4(paste("For their poster titled: ", winners[2,]$title))
+          ),
+          column(4,
+                 h4(paste("Student Class Project Posters 1st pace with a total of", winners[3,]$score,"votes")),
+                 h4(paste("goes to: ", winners[3,]$author)),
+                 h4(paste("For their poster titled: ", winners[3,]$title))
+          )
+        )
+      )
+            
       
-      h3(paste("2nd place, with a total of", winners[2,]$score,"votes")),
-      h3(paste("goes to: ", winners[2,]$author)),
-      h3(paste("For their poster titled: ", winners[2,]$title)),
-      
-      h3(paste("3rd place, with a total of", winners[3,]$score,"votes")),
-      h3(paste("goes to: ", winners[3,]$author)),
-      h3(paste("For their poster titled: ", winners[3,]$title))
     )
   })
   

@@ -1,10 +1,17 @@
 fields <- c("Category","ID","JudgeID","total","best")
 
-# posters <- read.xlsx("~/cins465/shinyproject2/Abstracts 2016_final.xlsx",sheetName = "Program")
-# names(posters) <- c("ID","author","title")
-# posters.df <<- separate(posters, col = "ID", into = c("Category","ID"),
-#                        sep = "(?<=[A-Z]) ?(?=[0-9])") %>% mutate(Category = factor(Category), ID = factor(ID))
+files <- list.files("~/CNSApp")
+csv.pattern <- ".+(\\.csv)$"
+csv.files <- grep(csv.pattern,files,value = TRUE)
 
+if(length(csv.files) != 0){
+  posters.csv <- grep("posterinfo",csv.files, value = TRUE)
+  poster.in <- read.csv(posters.csv)
+  poster.in$ID <- factor(poster.in$ID)
+  posters.df <<- poster.in
+}
+
+  
 posterInfo <- function(poster){
   poster <- str_replace_all(poster, "[ ]", "")
   category <- toupper(str_extract_all(poster,"[a-zA-Z]+"))
@@ -30,8 +37,6 @@ saveData <- function(data) {
   if (exists("responses")) {
     ## Validate if judge exists ?
     responses <<- rbind(responses, data)
-    # if(exists("filename"))
-      # write.csv(responses,filename)    
   } else {
     responses <<- data
   }
@@ -53,7 +58,30 @@ savePeoplesChoice <- function(votes) {
   }
 }
 
-getpalette <- function(input){
+savePosterInfo <- function(posters){
+  files <- list.files("~/CNSApp")
+  # files
+  csv.pattern <- ".+(\\.csv)$"
+  csv.files <- grep(csv.pattern,files,value = TRUE)
+  # csv.files
+  if(length(csv.fies) != 0){
+    posters.df <<- posters
+    write.csv(posters.df, "~/CNSApp/posterinfo.csv", row.names = FALSE)
+  }
+  else{
+    poster.in <- read.csv(csv.files)
+    posters.df <<- posters
+    if(all.equal(poster.in,posters.df)){
+      write.csv(posters.df, "~/CNSApp/posterinfo.csv", row.names = FALSE)
+    }
+    else{
+      write.csv(posters.df, "~/CNSApp/posterinfo.csv", row.names = FALSE)
+    }  
+  }
+}
+
+getpalette <- function
+(input){
   if(input == "GF")
     return("Reds")
   if(input == "UF")
@@ -70,10 +98,13 @@ getpalette <- function(input){
 plotData <- function(category){
   if(category == "GF" | category == "S" | category == "UF"){
     if(exists("responses")){
+      if(length(which(responses[,"Category"] == category)) == 0) {
+        return(NULL)
+      }
       return(responses %>% group_by(Category) %>% 
         filter(Category == category) %>% 
-        group_by(ID) %>% summarise(score = sum(total,best)) %>%
-        arrange(desc(score)) %>% head(n=5) %>%
+        group_by(ID) %>% mutate(score = sum(total,best)) %>%
+        arrange(desc(score)) %>% head(n=5) %>%  
         ggplot(aes(x = reorder(ID,desc(score)), y = score, fill = ID)) +
         scale_fill_brewer(palette = paste(getpalette(category))) +
         geom_bar(stat="identity") +
@@ -104,9 +135,9 @@ plotData <- function(category){
   if(category == "PEOPLESCHOICE"){
     if(exists("PEOPLESCHOICE")){
       return(PEOPLESCHOICE %>% 
-               group_by("ID" = paste(Category,ID,sep="")) %>% 
-               count(sort = TRUE) %>% 
-               data.frame() %>% head(n = 5) %>%
+               group_by(Category, "ID" = paste(Category,ID,sep="")) %>% 
+                          tally() %>% 
+                          slice(which.max(n)) %>%
                
                ggplot(aes(x = reorder(ID,desc(n)), y = n, fill = ID)) + 
                scale_fill_brewer(palette = paste(getpalette("PEOPLESCHOICE"))) +
@@ -157,14 +188,14 @@ getWinners <- function(category){
       }
     }
     if(category == "PEOPLESCHOICE"){
-      if(exists("PEOPLESCHOICE")){
+      if(exists("PEOPLESCHOICE") & exists("posters.df")){
         suppressWarnings(
           suppressMessages(
             winners <- PEOPLESCHOICE %>% 
-              group_by("ID" = paste(Category,ID,sep="")) %>%
-              count(sort = TRUE) %>% 
-              data.frame() %>% head(n = 3) %>% 
-              separate(col = "ID", into = c("Category","ID"), 
+              group_by(Category, "NAME" = paste(Category,ID,sep="")) %>% 
+              tally() %>% 
+              slice(which.max(n)) %>% data.frame() %>% ungroup() %>%
+              separate(col = "NAME", into = c("Original C","ID"),
                        sep = "(?<=[A-Z]) ?(?=[0-9])") %>%
               left_join(posters.df)
           )
@@ -224,4 +255,4 @@ getWinners <- function(category){
     }
   }
 }
-getWinners("PEOPLESCHOICE")
+
