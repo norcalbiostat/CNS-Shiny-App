@@ -1,10 +1,9 @@
 ## devtools::install_github('rstudio/DT')
-library(DT)
-pkgs <-c('shiny','DT','dplyr','plotly','ggplot2','stringr','tidyr','xlsx')
+pkgs <-c('shiny','dplyr','ggplot2','stringr','tidyr','xlsx','plotly')
 for(p in pkgs) if(p %in% rownames(installed.packages()) == FALSE) {install.packages(p)}
 for(p in pkgs) suppressPackageStartupMessages(library(p, quietly=TRUE, character.only=TRUE))
 rm('p','pkgs')
-
+pdf(NULL)
 source("helper.R")
 
 shinyServer(function(input, output, session) {
@@ -157,9 +156,9 @@ shinyServer(function(input, output, session) {
     plotData("GSM")
   })
   
-  output$plotPEPC <- renderPlot({
+  output$plotPEPC <- renderPlotly({
     autoInvalidate()
-    plotData("PEOPLESCHOICE")
+    plotlyData("PEOPLESCHOICE")
   })
   
   output$winersPep <- renderUI({
