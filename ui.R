@@ -1,4 +1,6 @@
 # Define UI for application that draws a histogram
+library(plotly)
+
 shinyUI(fluidPage(
   titlePanel("Shiny Judgeing App"),
   sidebarLayout(position = "left",
@@ -72,7 +74,8 @@ shinyUI(fluidPage(
                                       ),
                                       column(4,
                                              h3("People's Choice", align = "center"),
-                                             plotlyOutput("plotPEPC")
+                                             # plotOutput("plotPEPC"),
+                                             plotlyOutput("plotlyPEPC")
                                       ),
                                       column(4,
                                              fileInput('file1', 'Upload Poster Info',

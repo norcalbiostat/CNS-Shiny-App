@@ -1,3 +1,8 @@
+pkgs <-c('shiny','dplyr','ggplot2','stringr','tidyr','xlsx','plotly')
+for(p in pkgs) if(p %in% rownames(installed.packages()) == FALSE) {install.packages(p)}
+for(p in pkgs) suppressPackageStartupMessages(library(p, quietly=TRUE, character.only=TRUE))
+rm('p','pkgs')
+
 fields <- c("Category","ID","JudgeID","total","best")
 
 files <- list.files("~/CNSApp")
@@ -167,17 +172,18 @@ plotlyData <- function(category){
       gg <- df %>% ggplot(aes(x = reorder(paste(Category,ID,sep=""),desc(n)), 
                               y = n,
                               fill = Category,
-                              fill.title = title,
-                              fill.author = author)) +
+                              "poster.author" = author,
+                              "poster.title" = title)) +
                geom_bar(stat="identity") + 
-               scale_fill_brewer(palette = paste(getpalette(category))) +
+               # scale_fill_brewer(palette = paste(getpalette(category))) +
                geom_text(aes(label = n), vjust = 0) +
                theme(legend.position = "none",
                      axis.ticks = element_blank(),
                      panel.background = element_blank()) +
                labs(x = "Poster ID", y = "Total Votes")
-      return(ggplotly(gg, tooltip=c("author","title")))
-      
+      p <- ggplotly(gg, tooltip=c("poster.author","poster.title"))
+      p
+      return(p)
     }
   }
   return(ggplot() + theme_void())
