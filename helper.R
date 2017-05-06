@@ -53,23 +53,25 @@ savePeoplesChoice <- function(votes) {
 
 savePosterInfo <- function(posters){
   files <- list.files("~/CNSApp")
-  # files
+  print(files)
   csv.pattern <- ".+(\\.csv)$"
-  csv.files <- grep(csv.pattern,files,value = TRUE)
-  # csv.files
-  if(length(csv.fies) != 0){
+  posters.csv <- grep("posterinfo",csv.files, value = TRUE)
+  if(length(posters.csv) == 0){
     posters.df <<- posters
     write.csv(posters.df, "~/CNSApp/posterinfo.csv", row.names = FALSE)
+    return(TRUE)
+  }
+  
+  poster.in <- read.csv(posters.csv)
+  poster.in$ID <- factor(poster.in$ID)
+  posters.df <<- posters
+  if(identical(poster.in,posters.df)){
+    ## do nothing
+    return(TRUE)
   }
   else{
-    poster.in <- read.csv(csv.files)
-    posters.df <<- posters
-    if(all.equal(poster.in,posters.df)){
-      write.csv(posters.df, "~/CNSApp/posterinfo.csv", row.names = FALSE)
-    }
-    else{
-      write.csv(posters.df, "~/CNSApp/posterinfo.csv", row.names = FALSE)
-    }  
+    write.csv(posters.df, "~/CNSApp/posterinfo.csv", row.names = FALSE)
+    return(TRUE)
   }
 }
 

@@ -3,7 +3,6 @@ pkgs <-c('shiny','dplyr','ggplot2','stringr','tidyr','xlsx','plotly')
 for(p in pkgs) if(p %in% rownames(installed.packages()) == FALSE) {install.packages(p)}
 for(p in pkgs) suppressPackageStartupMessages(library(p, quietly=TRUE, character.only=TRUE))
 rm('p','pkgs')
-pdf(NULL)
 source("helper.R")
 
 shinyServer(function(input, output, session) {
@@ -49,7 +48,7 @@ shinyServer(function(input, output, session) {
 
     ext <- tools::file_ext(input$file1$name)
 
-    if(paste(ext) != ".lsx"){
+    if(paste(ext) != "xlsx"){
       print("THAT IS NOT AN XLSX")
       print(ext)
       return(NULL)
