@@ -151,6 +151,11 @@ shinyServer(function(input, output, session) {
     plotData("GSM")
   })
   
+  output$plotlyGSM <- renderPlotly({
+    autoInvalidate()
+    plotlyData("GSM")
+  })
+  
   output$plotPEPC <- renderPlot({
     autoInvalidate()
     plotData("PEOPLESCHOICE")

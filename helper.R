@@ -154,18 +154,54 @@ plotData <- function(category){
 }
 
 plotlyData <- function(category){
+  if(category == "GSM"){
+    if(exists("GSM") & exists("posters.df")){
+      suppressMessages(
+        suppressWarnings(
+          df <- GSM %>% 
+            group_by("NAME" = factor(paste(Category,ID,sep=""))) %>%
+            count(sort = TRUE) %>% 
+            ungroup() %>%
+            separate(col = "NAME", into = c("Category","ID"),
+              sep = "(?<=[A-Z]) ?(?=[0-9])", remove = FALSE) %>%
+            data.frame() %>% head(n = 5) %>% left_join(posters.df)
+        )
+      )
+      gg <- df %>% 
+              ggplot(aes(x = reorder(NAME,desc(n)), 
+                        y = n,
+                        fill = NAME,
+                        label = n,
+                        "poster.author" = as.character(author),
+                        "poster.title" = as.character(title))) + 
+              geom_text(vjust = 0) +
+              geom_bar(stat="identity") + 
+              scale_fill_brewer(palette = paste(getpalette(category))) +
+              theme(legend.position = "none",
+                    axis.ticks = element_blank(),
+                    panel.background = element_blank()) +
+              labs(x = "Poster ID", y = "Total Votes")
+
+      ply.gg <- ggplotly(gg, tooltip = c("poster.author","poster.title"))
+      
+      for (i in 1:length(ply.gg$x$data)){
+        ply.gg$x$data[[i]]$text <- c(ply.gg$x$data[[i]]$text, "") 
+      }
+      
+      return(ply.gg)
+    }   
+  }
   if(category == "PEOPLESCHOICE"){
     if(exists("PEOPLESCHOICE") & exists("posters.df")){
-      
       suppressWarnings(
         suppressMessages(
           df <- PEOPLESCHOICE %>% 
-        group_by(Category, "NAME" = paste(Category,ID,sep="")) %>% 
-        tally() %>% 
-        top_n(n=2) %>% data.frame() %>% ungroup() %>%
-        separate(col = "NAME", into = c("Original C","ID"),
+            group_by(Category, "NAME" = paste(Category,ID,sep="")) %>% 
+            tally() %>% 
+            top_n(n=2) %>% data.frame() %>% ungroup() %>%
+            separate(col = "NAME", into = c("Original C","ID"),
                  sep = "(?<=[A-Z]) ?(?=[0-9])") %>%
-        left_join(posters.df)
+            left_join(posters.df)
         )
       )
       
@@ -175,15 +211,19 @@ plotlyData <- function(category){
                               "poster.author" = author,
                               "poster.title" = title)) +
                geom_bar(stat="identity") + 
-               # scale_fill_brewer(palette = paste(getpalette(category))) +
+               scale_fill_brewer(palette = paste(getpalette(category))) +
                geom_text(aes(label = n), vjust = 0) +
                theme(legend.position = "none",
                      axis.ticks = element_blank(),
                      panel.background = element_blank()) +
                labs(x = "Poster ID", y = "Total Votes")
-      p <- ggplotly(gg, tooltip=c("poster.author","poster.title"))
-      p
-      return(p)
+      ply.gg <- ggplotly(gg, tooltip=c("poster.author","poster.title"))
+      
+      for (i in 1:length(ply.gg$x$data)){
+        ply.gg$x$data[[i]]$text <- c(ply.gg$x$data[[i]]$text, "") 
+      }
+      
+      return(ply.gg)
     }
   }
   return(ggplot() + theme_void())
