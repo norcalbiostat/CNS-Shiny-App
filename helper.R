@@ -174,10 +174,11 @@ plotlyData <- function(category){
                      axis.ticks = element_blank(),
                      panel.background = element_blank()) +
                labs(x = "Poster ID", y = "Total Votes")
-      ggplotly(gg, tooltip=c("author","title"))
+      return(ggplotly(gg, tooltip=c("author","title")))
       
     }
   }
+  return(ggplot() + theme_void())
 }
 
 getWinners <- function(category){
