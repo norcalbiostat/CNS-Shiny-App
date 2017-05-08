@@ -62,6 +62,7 @@ shinyUI(fluidPage(
                column(4,
                  h3("Student Posters", align = "center"),
                  plotOutput("plotS")
+                 #plotlyOutput("plotlyS")
                )
              )
            ),

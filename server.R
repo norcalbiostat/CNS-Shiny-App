@@ -42,18 +42,19 @@ shinyServer(function(input, output, session) {
       return(NULL)
     }
 
-    ext <- tools::file_ext(input$file1$name)
-
-    if(paste(ext) != "xlsx"){
-      print("THAT IS NOT AN XLSX")
-      print(ext)
-      return(NULL)
-    }
+    # ext <- tools::file_ext(input$file1$name)
+    # 
+    # if(paste(ext) != "xlsx"){
+    #   print("THAT IS NOT AN XLSX")
+    #   print(ext)
+    #   return(NULL)
+    # }
+    # 
+    # file.rename(input$file1$datapath,
+    #             paste(input$file1$datapath, ".xlsx", sep=""))
     
-    file.rename(input$file1$datapath,
-                paste(input$file1$datapath, ".xlsx", sep=""))
-    
-    posters <- read.xlsx(paste(input$file1$datapath, ".xlsx", sep=""),sheetName = "Program")
+    #posters <- read.xlsx(paste(input$file1$datapath, ".xlsx", sep=""),sheetName = "Program")
+    posters <- read.csv("poster_list.csv", header=TRUE)
     names(posters) <- c("ID","author","title")
     
     posters.df <- separate(posters, col = "ID", 
@@ -118,6 +119,11 @@ shinyServer(function(input, output, session) {
     autoInvalidate()
     plotData("S")
   })
+
+  output$plotlyS <- renderPlotly({
+    autoInvalidate()
+    plotlyData("S")
+  })
   
   output$winnersS <- renderUI({
     autoInvalidate()
@@ -155,17 +161,17 @@ shinyServer(function(input, output, session) {
       fluidRow(
         column(12,
           column(4,
-                 h4(paste("Graduate/Faculty Peoples Choice 1st place, with a total of", winners[1,]$score,"votes")),
+                 h4("Graduate/Faculty:"),
                  h4(paste("goes to: ", winners[1,]$author)),
                  h4(paste("For their poster titled: ", winners[1,]$title))
           ),
           column(4,
-                 h4(paste("Undergraduate/Faculty Peoples Choice 1st place, with a total of", winners[2,]$score,"votes")),
+                 h4("Undergraduate/Faculty:"),
                  h4(paste("goes to: ", winners[2,]$author)),
                  h4(paste("For their poster titled: ", winners[2,]$title))
           ),
           column(4,
-                 h4(paste("Student Class Project Posters 1st pace with a total of", winners[3,]$score,"votes")),
+                 h4("Student Class Projects"),
                  h4(paste("goes to: ", winners[3,]$author)),
                  h4(paste("For their poster titled: ", winners[3,]$title))
           )
