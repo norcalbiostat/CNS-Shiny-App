@@ -95,12 +95,6 @@ shinyServer(function(input, output, session) {
     autoInvalidate()
     winners <- getWinners("GF")
     tagList(
-      h3(paste("3rd place goes to: ", winners[3,]$author)),
-      h3(paste("For their poster titled: ", winners[3,]$title)),
-      
-      h3(paste("2nd place goes to: ", winners[2,]$author)),
-      h3(paste("For their poster titled: ", winners[2,]$title)),
-      
       h2(paste("1st place goes to: ", winners[1,]$author)),
       h2(paste("For their poster titled: ", winners[1,]$title))
     )
@@ -115,12 +109,6 @@ shinyServer(function(input, output, session) {
     autoInvalidate()
     winners <- getWinners("UF")
     tagList(
-      h3(paste("3rd place goes to: ", winners[3,]$author)),
-      h3(paste("For their poster titled: ", winners[3,]$title)),
-
-      h3(paste("2nd place goes to: ", winners[2,]$author)),
-      h3(paste("For their poster titled: ", winners[2,]$title)),
-
       h2(paste("1st place goes to: ", winners[1,]$author)),
       h2(paste("For their poster titled: ", winners[1,]$title))
     )
@@ -135,12 +123,6 @@ shinyServer(function(input, output, session) {
     autoInvalidate()
     winners <- getWinners("S")
     tagList(
-      h3(paste("3rd place goes to: ", winners[3,]$author)),
-      h3(paste("For their poster titled: ", winners[3,]$title)),
-      
-      h3(paste("2nd place goes to: ", winners[2,]$author)),
-      h3(paste("For their poster titled: ", winners[2,]$title)),
-      
       h2(paste("1st place goes to: ", winners[1,]$author)),
       h2(paste("For their poster titled: ", winners[1,]$title))
     )
