@@ -80,8 +80,6 @@ shinyUI(fluidPage(
                  plotlyOutput("plotlyPEPC")
                ),
                column(4,
-                 fileInput('file1', 'Upload Poster Info',accept=c('.xlsx')),
-                 hr(),
                  downloadButton('judgeResponses', 'Download Judge Scoring'),
                  br(),
                  br(),

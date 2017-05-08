@@ -42,18 +42,6 @@ shinyServer(function(input, output, session) {
       return(NULL)
     }
 
-    # ext <- tools::file_ext(input$file1$name)
-    # 
-    # if(paste(ext) != "xlsx"){
-    #   print("THAT IS NOT AN XLSX")
-    #   print(ext)
-    #   return(NULL)
-    # }
-    # 
-    # file.rename(input$file1$datapath,
-    #             paste(input$file1$datapath, ".xlsx", sep=""))
-    
-    #posters <- read.xlsx(paste(input$file1$datapath, ".xlsx", sep=""),sheetName = "Program")
     posters <- read.csv("poster_list.csv", header=TRUE)
     names(posters) <- c("ID","author","title")
     
