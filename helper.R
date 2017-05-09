@@ -13,23 +13,8 @@ posters.df <- separate(posters, col = "ID",
                        sep = "(?<=[A-Z]) ?(?=[0-9])") %>%
               mutate(Category = factor(Category), ID = factor(ID))
 
- # print(posters.df)
- # savePosterInfo(posters.df)
-
 
 fields <- c("Category","ID","JudgeID","total","best")
-
-files <- list.files()
-csv.pattern <- ".+(\\.csv)$"
-csv.files <- grep(csv.pattern,files,value = TRUE)
-
-if(length(csv.files) != 0){
-  posters.csv <- grep("posterinfo",csv.files, value = TRUE)
-  poster.in <- read.csv(posters.csv)
-  poster.in$ID <- factor(poster.in$ID)
-  posters.df <<- poster.in
-}
-
 
 posterInfo <- function(poster){
   poster <- str_replace_all(poster, "[ ]", "")
@@ -67,30 +52,6 @@ savePeoplesChoice <- function(votes) {
     PEOPLESCHOICE <<- rbind(PEOPLESCHOICE,votes)
   } else {
     PEOPLESCHOICE <<- votes
-  }
-}
-
-savePosterInfo <- function(posters){
-  files <- list.files()
-  print(files)
-  csv.pattern <- ".+(\\.csv)$"
-  posters.csv <- grep("posterinfo",csv.files, value = TRUE)
-  if(length(posters.csv) == 0){
-    posters.df <<- posters
-    write.csv(posters.df, "posterinfo.csv", row.names = FALSE)
-    return(TRUE)
-  }
-  
-  poster.in <- read.csv(posters.csv)
-  poster.in$ID <- factor(poster.in$ID)
-  posters.df <<- posters
-  if(identical(poster.in,posters.df)){
-    ## do nothing
-    return(TRUE)
-  }
-  else{
-    write.csv(posters.df, "posterinfo.csv", row.names = FALSE)
-    return(TRUE)
   }
 }
 

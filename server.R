@@ -5,7 +5,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$submitvote, {
     info <- posterInfo(input$posterid)
     if(info[1] != "" & info[2] != ""){
-      print(info)
+      #print(info)
       if(!is.na(input$total)){
         vote <- data.frame(as.character(info[1]),
                            as.character(info[2]),
@@ -35,25 +35,7 @@ shinyServer(function(input, output, session) {
     updateTextInput(session,"gsm2",value = "")
     updateTextInput(session,"gsm3",value = "")
   })
-  
-  observeEvent(input$file1, {
-    if(is.null(input$file1)) {
-      print("FILE IS NULL")
-      return(NULL)
-    }
 
-    posters <- read.csv("poster_list.csv", header=TRUE)
-    names(posters) <- c("ID","author","title")
-    
-    posters.df <- separate(posters, col = "ID", 
-                            into = c("Category","ID"),
-                            sep = "(?<=[A-Z]) ?(?=[0-9])") %>%
-    mutate(Category = factor(Category), ID = factor(ID))
-    
-    # print(posters.df)
-    
-    savePosterInfo(posters.df)
-  })
   
   observeEvent(input$submitpepc, {
     vote1 <- posterInfo(input$pep1)
