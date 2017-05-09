@@ -132,7 +132,7 @@ plotData <- function(category){
     if(exists("GSM")){
       return(GSM %>% 
                group_by("ID" = paste(Category,ID,sep="")) %>% 
-               count(sort = TRUE) %>% 
+               tally() %>% 
                data.frame() %>% head(n = 5) %>%
                
                ggplot(aes(x = reorder(ID,desc(n)), y = n, fill = ID)) + 
@@ -174,7 +174,7 @@ plotlyData <- function(category){
         suppressWarnings(
           df <- GSM %>% 
             group_by("NAME" = factor(paste(Category,ID,sep=""))) %>%
-            count(sort = TRUE) %>% 
+            tally() %>% 
             ungroup() %>%
             separate(col = "NAME", into = c("Category","ID"),
               sep = "(?<=[A-Z]) ?(?=[0-9])", remove = FALSE) %>%
