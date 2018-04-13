@@ -1,8 +1,6 @@
-# Define UI for application that draws a histogram
-suppressMessages(library(plotly))
 
 shinyUI(fluidPage(
-  titlePanel("Shiny Judging App"),
+  titlePanel("CNS Poster Judging App"),
     sidebarLayout(position = "left",
     sidebarPanel(
       tabsetPanel(
@@ -62,7 +60,6 @@ shinyUI(fluidPage(
                column(4,
                  h3("Student Posters", align = "center"),
                  plotOutput("plotS")
-                 #plotlyOutput("plotlyS")
                )
              )
            ),
@@ -71,13 +68,11 @@ shinyUI(fluidPage(
              column(12,
                column(4,
                  h3("GSM Recommendations", align = "center"),
-                 # plotOutput("plotGSM"),
-                 plotlyOutput("plotlyGSM")
+                 plotOutput("plotGSM")
                ),
                column(4,
                  h3("People's Choice", align = "center"),
-                 # plotOutput("plotPEPC"),
-                 plotlyOutput("plotlyPEPC")
+                 plotOutput("plotPEPC")
                ),
                column(4,
                  downloadButton('judgeResponses', 'Download Judge Scoring'),
@@ -99,7 +94,7 @@ shinyUI(fluidPage(
                  h1("Graduate Posters"),
                  uiOutput("winnersG")
         ),
-        tabPanel("Undergradute",
+        tabPanel("Undergraduate",
                  h1("Undergraduate Posters"),
                  uiOutput("winnersU")
         ),

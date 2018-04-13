@@ -12,7 +12,7 @@ shinyServer(function(input, output, session) {
                            as.character(input$judgeid),
                            as.integer(input$total),
                            as.numeric(input$best))
-        names(vote) <- fields
+        names(vote) <- fields #can eliminate this? 
         if(vote$total > 12)
           vote$total <- 0
         saveData(vote)  
@@ -90,10 +90,6 @@ shinyServer(function(input, output, session) {
     plotData("S")
   })
 
-  output$plotlyS <- renderPlotly({
-    autoInvalidate()
-    plotlyData("S")
-  })
   
   output$winnersS <- renderUI({
     autoInvalidate()
@@ -109,20 +105,12 @@ shinyServer(function(input, output, session) {
     plotData("GSM")
   })
   
-  output$plotlyGSM <- renderPlotly({
-    autoInvalidate()
-    plotlyData("GSM")
-  })
   
   output$plotPEPC <- renderPlot({
     autoInvalidate()
     plotData("PEOPLESCHOICE")
   })
   
-  output$plotlyPEPC <- renderPlotly({
-    autoInvalidate()
-    plotlyData("PEOPLESCHOICE")
-  })
   
   output$winersPep <- renderUI({
     autoInvalidate()
@@ -132,18 +120,18 @@ shinyServer(function(input, output, session) {
         column(12,
           column(4,
                  h4("Graduate/Faculty:"),
-                 h4(paste("goes to: ", winners[1,]$author)),
-                 h4(paste("For their poster titled: ", winners[1,]$title))
+                 h4(paste("goes to: ", winners[winners$Category == "GF",]$author)),
+                 h4(paste("For their poster titled: ", winners[winners$Category == "GF",]$title))
           ),
           column(4,
                  h4("Undergraduate/Faculty:"),
-                 h4(paste("goes to: ", winners[2,]$author)),
-                 h4(paste("For their poster titled: ", winners[2,]$title))
+                 h4(paste("goes to: ", winners[winners$Category == "UF",]$author)),
+                 h4(paste("For their poster titled: ", winners[winners$Category == "UF",]$title))
           ),
           column(4,
                  h4("Student Class Projects"),
-                 h4(paste("goes to: ", winners[3,]$author)),
-                 h4(paste("For their poster titled: ", winners[3,]$title))
+                 h4(paste("goes to: ", winners[winners$Category == "S",]$author)),
+                 h4(paste("For their poster titled: ", winners[winners$Category == "S",]$title))
           )
         )
       )
@@ -152,28 +140,28 @@ shinyServer(function(input, output, session) {
     )
   })
   
-  output$winnersGSM <- renderUI({
-    autoInvalidate()
-    winners <- getWinners("GSM")
-    tagList(
-      h2(paste("1st place, with a total of", winners[1,]$score,"votes")),
-      h2(paste("goes to: ", winners[1,]$author)),
-      h2(paste("For their poster titled: ", winners[1,]$title)),
-      
-      h3(paste("2nd place, with a total of", winners[2,]$score,"votes")),
-      h3(paste("goes to: ", winners[2,]$author)),
-      h3(paste("For their poster titled: ", winners[2,]$title)),
-      
-      h3(paste("3rd place, with a total of", winners[3,]$score,"votes")),
-      h3(paste("goes to: ", winners[3,]$author)),
-      h3(paste("For their poster titled: ", winners[3,]$title))
-    )
-  })
+  # output$winnersGSM <- renderUI({
+  #   autoInvalidate()
+  #   winners <- getWinners("GSM")
+  #   tagList(
+  #     h2(paste("1st place, with a total of", winners[1,]$score,"votes")),
+  #     h2(paste("goes to: ", winners[1,]$author)),
+  #     h2(paste("For their poster titled: ", winners[1,]$title)),
+  # 
+  #     h3(paste("2nd place, with a total of", winners[2,]$score,"votes")),
+  #     h3(paste("goes to: ", winners[2,]$author)),
+  #     h3(paste("For their poster titled: ", winners[2,]$title)),
+  # 
+  #     h3(paste("3rd place, with a total of", winners[3,]$score,"votes")),
+  #     h3(paste("goes to: ", winners[3,]$author)),
+  #     h3(paste("For their poster titled: ", winners[3,]$title))
+  #   )
+#  })
   
   output$judgeResponses <- downloadHandler(
-    filename = "responses.csv", # works the same as using the function. -- only works while viewing in browser. Not in RStudio app viewer. 
+    filename = "judgetotals.csv", # works the same as using the function. -- only works while viewing in browser. Not in RStudio app viewer. 
     content = function(file) {
-      write.csv(responses, file, row.names = FALSE)
+      write.csv(totals, file, row.names = FALSE)
     }
   )
   
