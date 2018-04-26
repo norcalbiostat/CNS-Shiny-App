@@ -1,11 +1,11 @@
-pkgs <-c('shiny','dplyr','ggplot2','stringr','tidyr')
-for(p in pkgs) if(p %in% rownames(installed.packages()) == FALSE) {install.packages(p)}
-for(p in pkgs) suppressPackageStartupMessages(library(p, quietly=TRUE, character.only=TRUE))
-rm('p','pkgs')
-
+#pkgs <-c('shiny','dplyr','ggplot2','stringr','tidyr')
+#for(p in pkgs) if(p %in% rownames(installed.packages()) == FALSE) {install.packages(p)}
+#for(p in pkgs) suppressPackageStartupMessages(library(p, quietly=TRUE, character.only=TRUE))
+#rm('p','pkgs')
+library(shiny); library(dplyr); library(ggplot2); library(stringr); library(tidyr)
 
 # read in poster names from file
-posters <- read.csv("poster_titles.csv", header=TRUE)
+posters <- read.csv("poster_list.csv", header=TRUE)
 names(posters) <- c("ID","author","title")
 
 posters.df <- separate(posters, col = "ID", 

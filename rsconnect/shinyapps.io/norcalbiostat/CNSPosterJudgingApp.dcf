@@ -1,0 +1,12 @@
+name: CNSPosterJudgingApp
+title: CNSPosterJudgingApp
+username:
+account: norcalbiostat
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 331388
+bundleId: 1341702
+url: https://norcalbiostat.shinyapps.io/CNSPosterJudgingApp/
+when: 1524778887.50389
+asMultiple: FALSE
+asStatic: FALSE
